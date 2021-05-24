@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Flex, Input } from '@stacks/ui';
 import { useCombobox } from 'downshift';
-import { searchInputStore } from '@store/asset-search';
+import { searchInputStore } from '@store/assets/asset-search';
 import { useRecoilState } from 'recoil';
 import { LoadingRectangle } from '../loading-rectangle';
 import { AssetResult } from './asset-search-result';
 import { SelectedAsset } from './selected-asset';
 import { useAssets } from '@common/hooks/use-assets';
 import { useSelectedAsset } from '@common/hooks/use-selected-asset';
-import { AssetWithMeta } from '@store/tokens';
+import { AssetWithMeta } from '@store/assets/types';
 
 export const AssetSearchField: React.FC<{ autoFocus?: boolean }> = ({ autoFocus, ...rest }) => {
   const assets = useAssets();

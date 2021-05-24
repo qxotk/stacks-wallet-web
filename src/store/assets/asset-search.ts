@@ -1,5 +1,6 @@
 import { atom, selector } from 'recoil';
-import { assetsState, AssetWithMeta } from '@store/tokens';
+import { assetsState } from '@store/assets/index';
+import { AssetWithMeta } from '@store/assets/types';
 
 export const selectedAssetIdState = atom<string | undefined>({
   key: 'asset-search.asset-id',
