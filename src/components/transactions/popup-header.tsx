@@ -10,7 +10,7 @@ import React from 'react';
 import { useAccountDisplayName } from '@common/hooks/use-account-names';
 
 export function PopupHeader() {
-  const { currentAccount, currentAccountIndex, currentAccountStxAddress } = useWallet();
+  const { currentAccount, currentAccountStxAddress } = useWallet();
   const balances = useFetchBalances();
   const displayName = useAccountDisplayName();
   if (!currentAccount || !currentAccountStxAddress) return null;

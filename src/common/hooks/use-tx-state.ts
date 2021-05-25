@@ -1,5 +1,5 @@
 import { useWallet } from './use-wallet';
-import { transactionBroadcastErrorStore, isUnauthorizedTransactionStore } from '@store/transaction';
+import { transactionBroadcastErrorState, isUnauthorizedTransactionState } from '@store/transaction';
 import { useRecoilCallback, useRecoilValue, waitForAll } from 'recoil';
 import { currentNetworkState } from '@store/networks';
 import { finishTransaction } from '@common/transaction-utils';
@@ -14,7 +14,7 @@ import {
 import { signedTransactionState } from '@store/transactions';
 import { requestTokenPayloadState, requestTokenState } from '@store/transactions/requests';
 
-function useHandleSubmitPendingTransaction() {
+export function useHandleSubmitPendingTransaction() {
   const { doSetLatestNonce } = useWallet();
   return useRecoilCallback(
     ({ snapshot, set }) =>
@@ -29,7 +29,7 @@ function useHandleSubmitPendingTransaction() {
         );
 
         if (!pendingTransaction || !requestToken || !tx) {
-          set(transactionBroadcastErrorStore, 'No pending transaction found.');
+          set(transactionBroadcastErrorState, 'No pending transaction found.');
           return;
         }
         try {
@@ -41,7 +41,7 @@ function useHandleSubmitPendingTransaction() {
           await doSetLatestNonce(tx);
           finalizeTxSignature(requestToken, result);
         } catch (error) {
-          set(transactionBroadcastErrorStore, error.message);
+          set(transactionBroadcastErrorState, error.message);
         }
       },
     [doSetLatestNonce]
@@ -56,8 +56,8 @@ export const useTxState = () => {
   const contractSource = useTransactionContractSource();
   const handleSubmitPendingTransaction = useHandleSubmitPendingTransaction();
 
-  const broadcastError = useRecoilValue(transactionBroadcastErrorStore);
-  const isUnauthorizedTransaction = useRecoilValue(isUnauthorizedTransactionStore);
+  const broadcastError = useRecoilValue(transactionBroadcastErrorState);
+  const isUnauthorizedTransaction = useRecoilValue(isUnauthorizedTransactionState);
 
   return {
     pendingTransaction,

@@ -5,7 +5,7 @@ import { getRequestOrigin, StorageKey } from '@extension/storage';
 import { DecodedAuthRequest } from '@common/dev/types';
 import { useWallet } from '@common/hooks/use-wallet';
 import { ScreenPaths } from '@store/common/types';
-import { useOnboardingState } from '../use-onboarding-state';
+import { useOnboardingState } from './use-onboarding-state';
 import { useSetRecoilState } from 'recoil';
 import { authRequestState, currentScreenState } from '@store/onboarding';
 

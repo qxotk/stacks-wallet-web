@@ -30,16 +30,10 @@ export const requestTokenPayloadState = selector({
 
 export const transactionRequestStxAddressState = selector({
   key: 'transactions.request.address',
-  get: ({ get }) => {
-    const payload = get(requestTokenPayloadState);
-    return payload?.stxAddress;
-  },
+  get: ({ get }) => get(requestTokenPayloadState)?.stxAddress,
 });
 
 export const transactionRequestNetwork = selector({
   key: 'transactions.request.network',
-  get: ({ get }) => {
-    const payload = get(requestTokenPayloadState);
-    return payload?.network;
-  },
+  get: ({ get }) => get(requestTokenPayloadState)?.network,
 });

@@ -7,12 +7,7 @@ import { walletState } from '@store/wallet';
 import { useRecoilValue } from 'recoil';
 import { Header } from '@components/header';
 import { useTransactionRequest } from '@common/hooks/use-transaction';
-import {
-  signedTransactionState,
-  transactionContractInterfaceState,
-  transactionContractSourceState,
-  transactionFunctionsState,
-} from '@store/transactions';
+import { signedTransactionState } from '@store/transactions';
 
 const openGithubIssue = (loadable: ReturnType<typeof useLoadable>) => {
   const issueParams = new URLSearchParams();

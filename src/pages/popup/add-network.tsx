@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Input, InputGroup, Button } from '@stacks/ui';
 import { Formik } from 'formik';
 import { useSetRecoilState } from 'recoil';
-import { currentNetworkKeyState, networksStore } from '@store/networks';
+import { currentNetworkKeyState, networksState } from '@store/networks';
 import { PopupContainer } from '@components/popup/container';
 import { useDoChangeScreen } from '@common/hooks/use-do-change-screen';
 import { ScreenPaths } from '@store/common/types';
@@ -15,7 +15,7 @@ export const AddNetwork: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const doChangeScreen = useDoChangeScreen();
-  const setNetworks = useSetRecoilState(networksStore);
+  const setNetworks = useSetRecoilState(networksState);
   const setNetworkKey = useSetRecoilState(currentNetworkKeyState);
 
   return (

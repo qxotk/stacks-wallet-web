@@ -9,7 +9,7 @@ import { ContractPreview } from '@components/transactions/contract-preview';
 import { RowItem } from '@components/transactions/row-item';
 import { useTransactionRequest } from '@common/hooks/use-transaction';
 import { useLoadable } from '@common/hooks/use-loadable';
-import { transactionFunctionsState } from '@store/transactions';
+import { transactionFunctionsState } from '@store/transactions/contract-call';
 
 interface ArgumentProps {
   arg: string;

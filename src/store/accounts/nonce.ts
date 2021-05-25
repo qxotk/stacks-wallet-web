@@ -2,7 +2,7 @@ import { atomFamily, selector, waitForAll } from 'recoil';
 import { localStorageEffect } from '@store/common/utils';
 import { currentNetworkState } from '@store/networks';
 import { accountDataState, currentAccountStxAddressState } from '@store/accounts/index';
-import { apiRevalidation } from '@store/common/api';
+import { apiRevalidation } from '@store/common/api-helpers';
 import { accountInfoStore } from '@store/accounts/index';
 
 export const latestNoncesState = atomFamily<

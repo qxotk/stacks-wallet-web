@@ -2,13 +2,13 @@ import { atom, selector, waitForAll } from 'recoil';
 import { localStorageEffect } from './common/utils';
 import { ChainID, TransactionVersion } from '@stacks/transactions';
 import { StacksNetwork, StacksTestnet, StacksMainnet } from '@stacks/network';
-import { apiRevalidation } from '@store/common/api';
+import { apiRevalidation } from '@store/common/api-helpers';
 import { transactionRequestNetwork } from '@store/transactions/requests';
 import { findMatchingNetworkKey } from '@common/utils';
 import { defaultNetworks, Networks } from '@common/constants';
-import { blocksApiClientState, infoApiClientState } from '@store/api-clients';
+import { blocksApiClientState, infoApiClientState } from '@store/common/api-clients';
 
-export const networksStore = atom<Networks>({
+export const networksState = atom<Networks>({
   key: 'networks',
   default: defaultNetworks,
   effects_UNSTABLE: [localStorageEffect()],
@@ -21,7 +21,7 @@ export const currentNetworkKeyState = atom({
     get: ({ get }) => {
       const { networks, txNetwork } = get(
         waitForAll({
-          networks: networksStore,
+          networks: networksState,
           txNetwork: transactionRequestNetwork,
         })
       );
@@ -39,7 +39,7 @@ export const currentNetworkState = selector({
   get: ({ get }) => {
     const { networks, key } = get(
       waitForAll({
-        networks: networksStore,
+        networks: networksState,
         key: currentNetworkKeyState,
       })
     );

@@ -5,7 +5,7 @@ import BN from 'bn.js';
 
 import type { AllAccountData } from '@common/api/accounts';
 import { fetchAllAccountData } from '@common/api/accounts';
-import { apiRevalidation, intervalStore } from '@store/common/api';
+import { apiRevalidation, intervalStore } from '@store/common/api-helpers';
 import { fetcher } from '@common/wrapped-fetch';
 
 import { transactionRequestStxAddressState } from '@store/transactions/requests';

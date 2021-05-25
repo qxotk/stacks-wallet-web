@@ -1,34 +1,23 @@
 import {
-  useSignedTransaction,
   useTransactionContractInterface,
   useTransactionRequest,
 } from '@common/hooks/use-transaction';
 import { useRecoilValue } from 'recoil';
-import { isUnauthorizedTransactionStore } from '@store/transaction';
+import { isUnauthorizedTransactionState, transactionBroadcastErrorState } from '@store/transaction';
 import { useWallet } from '@common/hooks/use-wallet';
 import { useFetchBalances } from '@common/hooks/use-account-info';
 import { useMemo } from 'react';
 import { TransactionErrorReason } from '@pages/transaction/transaction-error';
 import BigNumber from 'bignumber.js';
 import { TransactionTypes } from '@stacks/connect';
-import { AuthType } from '@stacks/transactions';
-
-function useFee() {
-  const signedTransaction = useSignedTransaction();
-  if (!signedTransaction.value) return;
-  const isSponsored = signedTransaction.value.auth.authType === AuthType.Sponsored;
-  const amount = signedTransaction.value.auth.spendingCondition?.fee?.toNumber();
-  return {
-    amount,
-    isSponsored,
-  };
-}
+import { useTransactionFee } from '@common/hooks/use-transaction-fee';
 
 export function useTransactionError() {
   const transactionRequest = useTransactionRequest();
-  const fee = useFee();
+  const fee = useTransactionFee();
   const contractInterface = useTransactionContractInterface();
-  const isUnauthorizedTransaction = useRecoilValue(isUnauthorizedTransactionStore);
+  const broadcastError = useRecoilValue(transactionBroadcastErrorState);
+  const isUnauthorizedTransaction = useRecoilValue(isUnauthorizedTransactionState);
   const { currentAccount } = useWallet();
   const balances = useFetchBalances();
   return useMemo<TransactionErrorReason | void>(() => {
@@ -43,7 +32,7 @@ export function useTransactionError() {
       !contractInterface.contents
     )
       return TransactionErrorReason.NoContract;
-    // if (broadcastError) return TransactionErrorReason.BroadcastError;
+    if (broadcastError) return TransactionErrorReason.BroadcastError;
 
     if (balances.value) {
       const stxBalance = new BigNumber(balances.value.stx.balance);
@@ -60,6 +49,7 @@ export function useTransactionError() {
     return;
   }, [
     fee,
+    broadcastError,
     contractInterface,
     balances,
     currentAccount,

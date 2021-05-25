@@ -10,7 +10,7 @@ import { gaiaUrl } from '@common/constants';
 import {
   currentNetworkKeyState,
   currentNetworkState,
-  networksStore,
+  networksState,
   networkTransactionVersionState,
   latestBlockHeightState,
 } from '@store/networks';
@@ -27,7 +27,7 @@ import { useVaultMessenger } from '@common/hooks/use-vault-messenger';
 
 import { useOnboardingState } from './use-onboarding-state';
 import { finalizeAuthResponse } from '@common/utils';
-import { apiRevalidation } from '@store/common/api';
+import { apiRevalidation } from '@store/common/api-helpers';
 import { useLoadable } from '@common/hooks/use-loadable';
 import {
   currentAccountIndexStore,
@@ -35,6 +35,7 @@ import {
   currentAccountStxAddressState,
 } from '@store/accounts';
 import { latestNoncesState } from '@store/accounts/nonce';
+import { bytesToText } from '@store/common/utils';
 
 export const useWallet = () => {
   const hasRehydratedVault = useRecoilValue(hasRehydratedVaultStore);
@@ -46,7 +47,7 @@ export const useWallet = () => {
   const currentAccount = useRecoilValue(currentAccountState);
   const currentAccountStxAddress = useRecoilValue(currentAccountStxAddressState);
   const transactionVersion = useRecoilValue(networkTransactionVersionState);
-  const networks = useRecoilValue(networksStore);
+  const networks = useRecoilValue(networksState);
   const currentNetwork = useRecoilValue(currentNetworkState);
   const currentNetworkKey = useRecoilValue(currentNetworkKeyState);
   const walletConfig = useLoadable(walletConfigStore);
@@ -123,7 +124,7 @@ export const useWallet = () => {
   return {
     hasRehydratedVault,
     wallet,
-    secretKey,
+    secretKey: secretKey ? bytesToText(secretKey) : undefined,
     isSignedIn,
     currentAccount,
     currentAccountIndex,

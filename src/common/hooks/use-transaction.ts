@@ -1,12 +1,11 @@
 import { useLoadable } from '@common/hooks/use-loadable';
 import { requestTokenPayloadState } from '@store/transactions/requests';
+import { postConditionsState, signedTransactionState } from '@store/transactions';
 import {
-  postConditionsState,
-  signedTransactionState,
   transactionContractInterfaceState,
   transactionContractSourceState,
   transactionFunctionsState,
-} from '@store/transactions';
+} from '@store/transactions/contract-call';
 
 export function useTransactionRequest() {
   const payload = useLoadable(requestTokenPayloadState);

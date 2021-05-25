@@ -26,12 +26,12 @@ export type TransactionPayloadWithAttachment = TransactionPayload & {
   attachment?: string;
 };
 
-export const isUnauthorizedTransactionStore = atom<boolean>({
+export const isUnauthorizedTransactionState = atom<boolean>({
   key: 'transaction.is-unauthorized-tx',
   default: false,
 });
 
-export const transactionBroadcastErrorStore = atom<string | null>({
+export const transactionBroadcastErrorState = atom<string | null>({
   key: 'transaction.broadcast-error',
   default: null,
 });
