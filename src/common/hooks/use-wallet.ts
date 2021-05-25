@@ -8,11 +8,11 @@ import {
 import { useRecoilValue, useRecoilState, useRecoilCallback } from 'recoil';
 import { gaiaUrl } from '@common/constants';
 import {
-  currentNetworkKeyStore,
-  currentNetworkStore,
+  currentNetworkKeyState,
+  currentNetworkState,
   networksStore,
-  currentTransactionVersion,
-  latestBlockHeightStore,
+  networkTransactionVersionState,
+  latestBlockHeightState,
 } from '@store/networks';
 import {
   walletState,
@@ -31,8 +31,8 @@ import { apiRevalidation } from '@store/common/api';
 import { useLoadable } from '@common/hooks/use-loadable';
 import {
   currentAccountIndexStore,
-  currentAccountStore,
-  currentAccountStxAddressStore,
+  currentAccountState,
+  currentAccountStxAddressState,
 } from '@store/accounts';
 import { latestNoncesState } from '@store/accounts/nonce';
 
@@ -43,12 +43,12 @@ export const useWallet = () => {
   const encryptedSecretKey = useRecoilValue(encryptedSecretKeyStore);
   const currentAccountIndex = useRecoilValue(currentAccountIndexStore);
   const hasSetPassword = useRecoilValue(hasSetPasswordState);
-  const currentAccount = useRecoilValue(currentAccountStore);
-  const currentAccountStxAddress = useRecoilValue(currentAccountStxAddressStore);
-  const transactionVersion = useRecoilValue(currentTransactionVersion);
+  const currentAccount = useRecoilValue(currentAccountState);
+  const currentAccountStxAddress = useRecoilValue(currentAccountStxAddressState);
+  const transactionVersion = useRecoilValue(networkTransactionVersionState);
   const networks = useRecoilValue(networksStore);
-  const currentNetwork = useRecoilValue(currentNetworkStore);
-  const currentNetworkKey = useRecoilValue(currentNetworkKeyStore);
+  const currentNetwork = useRecoilValue(currentNetworkState);
+  const currentNetworkKey = useRecoilValue(currentNetworkKeyState);
   const walletConfig = useLoadable(walletConfigStore);
   const vaultMessenger = useVaultMessenger();
 
@@ -66,9 +66,9 @@ export const useWallet = () => {
         const newNonce = tx.auth.spendingCondition?.nonce.toNumber();
         if (newNonce !== undefined) {
           set(apiRevalidation, current => (current as number) + 1);
-          const blockHeight = await snapshot.getPromise(latestBlockHeightStore);
-          const network = await snapshot.getPromise(currentNetworkStore);
-          const address = await snapshot.getPromise(currentAccountStxAddressStore);
+          const blockHeight = await snapshot.getPromise(latestBlockHeightState);
+          const network = await snapshot.getPromise(currentNetworkState);
+          const address = await snapshot.getPromise(currentAccountStxAddressState);
           set(latestNoncesState([network.url, address || '']), () => ({
             blockHeight,
             nonce: newNonce,

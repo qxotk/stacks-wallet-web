@@ -5,7 +5,7 @@ import {
   transactionPayloadStore,
 } from '@store/transaction';
 import { getPostCondition, handlePostConditions } from '@common/post-condition-utils';
-import { currentAccountStxAddressStore } from '@store/accounts';
+import { currentAccountStxAddressState } from '@store/accounts';
 
 export function usePostConditionsCallback() {
   return useRecoilCallback(postConditionsCallback, []);
@@ -17,7 +17,7 @@ function postConditionsCallback({ snapshot, set }: CallbackInterface) {
       snapshot.getPromise(transactionPayloadStore),
       snapshot.getPromise(postConditionsStore),
       snapshot.getPromise(postConditionsHasSetStore),
-      snapshot.getPromise(currentAccountStxAddressStore),
+      snapshot.getPromise(currentAccountStxAddressState),
     ]);
     if (!payload) return;
 

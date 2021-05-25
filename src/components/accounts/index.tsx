@@ -7,10 +7,12 @@ import { ListItem } from './list-item';
 import { AccountAvatar } from './account-avatar';
 import { useDoChangeScreen } from '@common/hooks/use-do-change-screen';
 import { useWallet } from '@common/hooks/use-wallet';
-import { getStxAddress, Account } from '@stacks/wallet-sdk';
+import { Account } from '@stacks/wallet-sdk';
 import { useOnboardingState } from '@common/hooks/use-onboarding-state';
 import { truncateMiddle } from '@stacks/ui-utils';
 import { useAccountDisplayName } from '@common/hooks/use-account-names';
+import { accountsWithAddressState } from '@store/accounts';
+import { useLoadable } from '@common/hooks/use-loadable';
 
 const loadingProps = { color: '#A1A7B3' };
 const getLoadingProps = (loading: boolean) => (loading ? loadingProps : {});
@@ -25,14 +27,14 @@ interface AccountItemProps extends FlexProps {
   account: Account;
 }
 
-const AccountItem: React.FC<AccountItemProps> = ({
+export const AccountItem: React.FC<AccountItemProps> = ({
   address,
   selectedAddress,
   account,
   ...rest
 }) => {
   const { decodedAuthRequest } = useOnboardingState();
-  const name = useAccountDisplayName();
+  const name = useAccountDisplayName(account.index);
   const loading = address === selectedAddress;
   const showLoadingProps = !!selectedAddress || !decodedAuthRequest;
   return (
@@ -72,7 +74,8 @@ export const Accounts: React.FC<AccountsProps> = ({
   next,
   ...rest
 }) => {
-  const { wallet, transactionVersion } = useWallet();
+  const { wallet } = useWallet();
+  const { value: accounts } = useLoadable(accountsWithAddressState);
   const [selectedAddress, setSelectedAddress] = useState<null | string>(null);
   const { decodedAuthRequest } = useOnboardingState();
   const doChangeScreen = useDoChangeScreen();
@@ -82,14 +85,7 @@ export const Accounts: React.FC<AccountsProps> = ({
     }
   }, [accountIndex, setSelectedAddress, selectedAddress]);
 
-  if (!wallet) return null;
-
-  const accounts = wallet.accounts.map(account => ({
-    ...account,
-    stxAddress: getStxAddress({ account, transactionVersion }),
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    number: account.index + 1,
-  }));
+  if (!wallet || !accounts) return null;
 
   const disableSelect = !decodedAuthRequest || !!selectedAddress;
 
@@ -98,21 +94,21 @@ export const Accounts: React.FC<AccountsProps> = ({
       {accounts.map((account, index) => {
         return (
           <ListItem
-            key={account.stxAddress}
+            key={account.address}
             isFirst={index === 0}
             cursor={disableSelect ? 'not-allowed' : 'pointer'}
-            iconComponent={() => <AccountAvatar username={account.number.toString()} mr={3} />}
+            iconComponent={() => <AccountAvatar username={account.index.toString()} mr={3} />}
             hasAction={!!next && selectedAddress === null}
-            data-test={`account-${(account.username || account.stxAddress).split('.')[0]}`}
+            data-test={`account-${(account.username || account.address).split('.')[0]}`}
             onClick={() => {
               if (!next) return;
               if (selectedAddress) return;
-              setSelectedAddress(account.stxAddress);
+              setSelectedAddress(account.address);
               next(index);
             }}
           >
             <AccountItem
-              address={account.stxAddress}
+              address={account.address}
               selectedAddress={selectedAddress}
               data-test={`account-index-${index}`}
               account={account}

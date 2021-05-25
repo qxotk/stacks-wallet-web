@@ -6,9 +6,12 @@ export function useAccountNames() {
   return useLoadable(accountNameState);
 }
 
-export function useAccountDisplayName() {
+export function useAccountDisplayName(index?: number) {
   const names = useAccountNames();
   const account = useCurrentAccount();
+  if (typeof index === 'number') {
+    return names.value?.[index]?.names?.[0] || `Account ${index + 1}`;
+  }
   if (!account || typeof account?.index !== 'number') return 'Account';
-  return names.value?.[account.index]?.names?.[0] || `Account ${account?.index + 1}`;
+  return names.value?.[index || account.index]?.names?.[0] || `Account ${account?.index + 1}`;
 }

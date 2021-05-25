@@ -1,8 +1,8 @@
 import { useRecoilCallback } from 'recoil';
 import { transactionPayloadStore } from '@store/transaction';
 import {
-  currentNetworkKeyStore,
-  currentNetworkStore,
+  currentNetworkKeyState,
+  currentNetworkState,
   Network,
   networksStore,
 } from '@store/networks';
@@ -17,7 +17,7 @@ export function useNetworkSwitchCallback() {
         let foundNetwork = false;
 
         const [currentNetwork, networks] = await Promise.all([
-          snapshot.getPromise(currentNetworkStore),
+          snapshot.getPromise(currentNetworkState),
           snapshot.getPromise(networksStore),
         ]);
 
@@ -30,7 +30,7 @@ export function useNetworkSwitchCallback() {
 
           if (newNetworkKey) {
             console.debug('Changing to new network to match node URL', newNetworkKey);
-            set(currentNetworkKeyStore, newNetworkKey);
+            set(currentNetworkKeyState, newNetworkKey);
             foundNetwork = true;
           }
         }
@@ -43,7 +43,7 @@ export function useNetworkSwitchCallback() {
 
           if (newNetworkKey) {
             console.debug('Changing to new network from chainID', newNetworkKey);
-            set(currentNetworkKeyStore, newNetworkKey);
+            set(currentNetworkKeyState, newNetworkKey);
             return;
           }
         }

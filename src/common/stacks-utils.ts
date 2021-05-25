@@ -47,7 +47,7 @@ export const encodeContractCallArgument = ({ type, value }: ContractCallArgument
 
 export const stacksValue = ({
   value,
-  fixedDecimals = false,
+  fixedDecimals = true,
   withTicker = true,
   abbreviate = false,
 }: {

@@ -1,6 +1,6 @@
 import { useRecoilCallback } from 'recoil';
 import { stacksNetworkStore } from '@store/networks';
-import { currentAccountStore } from '@store/accounts';
+import { currentAccountState } from '@store/accounts';
 import { correctNonceState } from '@store/accounts/nonce';
 import { makeSTXTokenTransfer, StacksTransaction } from '@stacks/transactions';
 import BN from 'bn.js';
@@ -19,7 +19,7 @@ export function useMakeStxTransfer() {
   return useRecoilCallback(({ snapshot }) => async (params: TokenTransferParams) => {
     const { amount, recipient } = params;
     const stacksNetwork = await snapshot.getPromise(stacksNetworkStore);
-    const account = await snapshot.getPromise(currentAccountStore);
+    const account = await snapshot.getPromise(currentAccountState);
     const nonce = await snapshot.getPromise(correctNonceState);
 
     if (!account) return;
