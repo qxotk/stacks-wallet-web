@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 import { microStxToStx, validateAddressChain, validateStacksAddress } from '@common/stacks-utils';
 import { ErrorLabel } from '@components/error-label';
 import { AssetSearch } from '@components/asset-search/asset-search';
-import { useFetchBalances } from '@common/hooks/use-account-info';
+import { useFetchBalances } from '@common/hooks/account/use-account-info';
 import { useWallet } from '@common/hooks/use-wallet';
 import { useAssets } from '@common/hooks/use-assets';
 import { Header } from '@components/header';

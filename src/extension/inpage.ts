@@ -13,6 +13,7 @@ import {
 interface Response {
   source: 'blockstack-extension';
   method: string;
+
   [key: string]: any;
 }
 
@@ -84,7 +85,7 @@ const provider: StacksProvider = {
         if (!isValidEvent(event, Methods.transactionResponse)) return;
         if (event.data.payload?.transactionRequest !== transactionRequest) return;
         window.removeEventListener('message', handleMessage);
-        resolve(event.data.payload.transactionResponse);
+        resolve(event.data.payload.transactionResponse as any); // TODO: fix cast, related to `cancel`;
       };
       window.addEventListener('message', handleMessage);
     });

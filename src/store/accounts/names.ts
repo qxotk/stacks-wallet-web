@@ -1,7 +1,7 @@
 import { selector } from 'recoil';
 import { getStxAddress } from '@stacks/wallet-sdk';
 
-import { fetcher } from '@common/wrapped-fetch';
+import { fetcher } from '@common/api/wrapped-fetch';
 
 import { accountsState } from './index';
 import { currentNetworkState, networkTransactionVersionState } from '@store/networks';

@@ -1,4 +1,5 @@
 import { FinishedTxPayload, SponsoredFinishedTxPayload } from '@stacks/connect';
+
 /**
  * Content Script <-> Background messaging
  */
@@ -49,7 +50,7 @@ export type AuthenticationResponseMessage = Message<
 
 export type TransactionRequestMessage = Message<Methods.transactionRequest, string>;
 
-export type TxResult = SponsoredFinishedTxPayload | FinishedTxPayload;
+export type TxResult = Omit<SponsoredFinishedTxPayload | FinishedTxPayload, 'cancel'>;
 
 export type TransactionResponseMessage = Message<
   Methods.transactionResponse,

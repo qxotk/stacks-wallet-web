@@ -7,7 +7,7 @@ import {
   InfoApi,
   BlocksApi,
 } from '@stacks/blockchain-api-client';
-import { fetcher } from '@common/wrapped-fetch';
+import { fetcher } from '@common/api/wrapped-fetch';
 
 export const apiClientConfiguration = selector({
   key: 'clients.config',

@@ -1,4 +1,4 @@
-import { atom, selector, waitForAll } from 'recoil';
+import { atom, DefaultValue, selector, waitForAll } from 'recoil';
 import { localStorageEffect } from './common/utils';
 import { ChainID, TransactionVersion } from '@stacks/transactions';
 import { StacksNetwork, StacksTestnet, StacksMainnet } from '@stacks/network';
@@ -28,10 +28,28 @@ export const currentNetworkKeyState = atom({
       if (txNetwork && networks && Object.keys(networks).length > 0) {
         const newKey = findMatchingNetworkKey(txNetwork, networks);
         if (newKey) return newKey;
+      } else {
+        const savedValue = localStorage.getItem('networks.current-key');
+        if (savedValue) {
+          try {
+            return JSON.parse(savedValue);
+          } catch (e) {}
+        }
       }
       return 'mainnet';
     },
   }),
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      onSet(newValue => {
+        if (newValue instanceof DefaultValue) {
+          localStorage.removeItem('networks.current-key');
+        } else {
+          localStorage.setItem('networks.current-key', JSON.stringify(newValue));
+        }
+      });
+    },
+  ],
 });
 
 export const currentNetworkState = selector({

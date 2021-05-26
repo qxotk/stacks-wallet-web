@@ -25,7 +25,7 @@ import {
 import { StacksTransaction } from '@stacks/transactions';
 import { useVaultMessenger } from '@common/hooks/use-vault-messenger';
 
-import { useOnboardingState } from './use-onboarding-state';
+import { useOnboardingState } from './auth/use-onboarding-state';
 import { finalizeAuthResponse } from '@common/utils';
 import { apiRevalidation } from '@store/common/api-helpers';
 import { useLoadable } from '@common/hooks/use-loadable';

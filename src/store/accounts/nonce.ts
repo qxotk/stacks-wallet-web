@@ -55,7 +55,11 @@ export const correctNonceState = selector({
     // they have any pending or confirmed transactions
     const hasTransactions = !!latestPendingTx || !!lastConfirmedTx;
 
-    if (!hasTransactions || !account || account.nonce === 0) return 0;
+    console.log({
+      hasTransactions,
+      account,
+    });
+    if (!hasTransactions || !account || (!hasTransactions && account.nonce === 0)) return 0;
 
     // if the oldest pending tx is more than 1 above the account nonce, it's likely there was
     // a race condition such that the client didn't have the most up to date pending tx
@@ -70,7 +74,8 @@ export const correctNonceState = selector({
     // otherwise, without micro-blocks, the account nonce will likely be out of date compared
     // and not be incremented based on pending transactions
     const pendingNonce = (latestPendingTx && latestPendingTx.nonce) || 0;
-    const usePendingNonce = pendingNonce > lastConfirmedTx.nonce;
+    const usePendingNonce =
+      pendingNonce > lastConfirmedTx.nonce || pendingNonce + 1 > account.nonce;
 
     // if they have a last confirmed transaction (but no pending)
     // and it's greater than account nonce, we should use that one

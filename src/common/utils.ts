@@ -1,7 +1,7 @@
 import React from 'react';
 import { DecodedAuthRequest } from './dev/types';
 import { wordlists } from 'bip39';
-import { isValidUrl } from './validate-url';
+import { isValidUrl } from './validation/validate-url';
 import { getTab, deleteTabForRequest, StorageKey } from '@extension/storage';
 import {
   AuthenticationResponseMessage,
@@ -71,8 +71,7 @@ export const finalizeAuthResponse = ({
   }
 };
 
-export const finalizeTxSignature = (requestPayload: string, data: TxResult) => {
-  console.log(requestPayload, data);
+export function finalizeTxSignature(requestPayload: string, data: TxResult) {
   try {
     const tabId = getTab(StorageKey.transactionRequests, requestPayload);
     const responseMessage: TransactionResponseMessage = {
@@ -92,7 +91,7 @@ export const finalizeTxSignature = (requestPayload: string, data: TxResult) => {
       'Your transaction was broadcasted, but we lost communication with the app you started with.'
     );
   }
-};
+}
 
 export const getRandomWord = () => {
   const list = wordlists.EN;

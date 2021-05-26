@@ -1,4 +1,4 @@
-import { selector, waitForAll } from 'recoil';
+import { atom, selector, waitForAll } from 'recoil';
 import { ChainID } from '@stacks/transactions';
 import { StacksMainnet, StacksTestnet } from '@stacks/network';
 
@@ -7,8 +7,9 @@ import { correctNonceState } from '@store/accounts/nonce';
 import { currentAccountState, currentAccountStxAddressState } from '@store/accounts';
 import { requestTokenPayloadState } from '@store/transactions/requests';
 
-import { getPostCondition, handlePostConditions } from '@common/post-condition-utils';
-import { generateTransaction } from '@common/transaction-utils';
+import { generateSignedTransaction } from '@common/transactions/transactions';
+import { getPostCondition, handlePostConditions } from '@common/transactions/postcondition-utils';
+import { TransactionPayload } from '@stacks/connect';
 
 export const postConditionsState = selector({
   key: 'transactions.post-conditions',
@@ -61,10 +62,21 @@ export const signedTransactionState = selector({
       })
     );
     if (!account || !pendingTransaction) return;
-    return generateTransaction({
+    return generateSignedTransaction({
       senderKey: account.stxPrivateKey,
       nonce,
       txData: pendingTransaction,
     });
   },
+});
+export type TransactionPayloadWithAttachment = TransactionPayload & {
+  attachment?: string;
+};
+export const isUnauthorizedTransactionState = atom<boolean>({
+  key: 'transaction.is-unauthorized-tx',
+  default: false,
+});
+export const transactionBroadcastErrorState = atom<string | null>({
+  key: 'transaction.broadcast-error',
+  default: null,
 });

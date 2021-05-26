@@ -8,9 +8,9 @@ import { AccountAvatar } from './account-avatar';
 import { useDoChangeScreen } from '@common/hooks/use-do-change-screen';
 import { useWallet } from '@common/hooks/use-wallet';
 import { Account } from '@stacks/wallet-sdk';
-import { useOnboardingState } from '@common/hooks/use-onboarding-state';
+import { useOnboardingState } from '@common/hooks/auth/use-onboarding-state';
 import { truncateMiddle } from '@stacks/ui-utils';
-import { useAccountDisplayName } from '@common/hooks/use-account-names';
+import { useAccountDisplayName } from '@common/hooks/account/use-account-names';
 import { accountsWithAddressState } from '@store/accounts';
 import { useLoadable } from '@common/hooks/use-loadable';
 
