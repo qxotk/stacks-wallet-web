@@ -1,5 +1,5 @@
 import { atom, selector, waitForAll } from 'recoil';
-import { ChainID } from '@stacks/transactions';
+import { ChainID, TransactionVersion } from '@stacks/transactions';
 import { StacksMainnet, StacksTestnet } from '@stacks/network';
 
 import { currentNetworkState } from '@store/networks';
@@ -11,8 +11,17 @@ import { generateSignedTransaction } from '@common/transactions/transactions';
 import { getPostCondition, handlePostConditions } from '@common/transactions/postcondition-utils';
 import { TransactionPayload } from '@stacks/connect';
 
+enum KEYS {
+  POST_CONDITIONS = 'transactions/POST_CONDITIONS',
+  PENDING_TRANSACTION = 'transactions/PENDING_TRANSACTION',
+  SIGNED_TRANSACTION = 'transactions/SIGNED_TRANSACTION',
+  TX_VERSION = 'transactions/TX_VERSION',
+  ERROR_IS_UNAUTHORIZED = 'transactions/ERROR_IS_UNAUTHORIZED',
+  ERROR_BROADCAST_FAILURE = 'transactions/ERROR_BROADCAST_FAILURE',
+}
+
 export const postConditionsState = selector({
-  key: 'transactions.post-conditions',
+  key: KEYS.POST_CONDITIONS,
   get: ({ get }) => {
     const { payload, address } = get(
       waitForAll({
@@ -34,7 +43,7 @@ export const postConditionsState = selector({
 });
 
 export const pendingTransactionState = selector({
-  key: 'transactions.pending',
+  key: KEYS.PENDING_TRANSACTION,
   get: ({ get }) => {
     const { payload, postConditions, _network } = get(
       waitForAll({
@@ -52,7 +61,7 @@ export const pendingTransactionState = selector({
 });
 
 export const signedTransactionState = selector({
-  key: 'transactions.signed',
+  key: KEYS.SIGNED_TRANSACTION,
   get: async ({ get }) => {
     const { account, pendingTransaction, nonce } = get(
       waitForAll({
@@ -69,14 +78,23 @@ export const signedTransactionState = selector({
     });
   },
 });
+
+export const transactionNetworkVersionState = selector({
+  key: KEYS.TX_VERSION,
+  get: ({ get }) =>
+    get(currentNetworkState).chainId === ChainID.Mainnet
+      ? TransactionVersion.Mainnet
+      : TransactionVersion.Testnet,
+});
+
 export type TransactionPayloadWithAttachment = TransactionPayload & {
   attachment?: string;
 };
 export const isUnauthorizedTransactionState = atom<boolean>({
-  key: 'transaction.is-unauthorized-tx',
+  key: KEYS.ERROR_IS_UNAUTHORIZED,
   default: false,
 });
 export const transactionBroadcastErrorState = atom<string | null>({
-  key: 'transaction.broadcast-error',
+  key: KEYS.ERROR_BROADCAST_FAILURE,
   default: null,
 });

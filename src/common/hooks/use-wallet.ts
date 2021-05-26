@@ -11,7 +11,6 @@ import {
   currentNetworkKeyState,
   currentNetworkState,
   networksState,
-  networkTransactionVersionState,
   latestBlockHeightState,
 } from '@store/networks';
 import {
@@ -36,6 +35,7 @@ import {
 } from '@store/accounts';
 import { latestNoncesState } from '@store/accounts/nonce';
 import { bytesToText } from '@store/common/utils';
+import { transactionNetworkVersionState } from '@store/transactions';
 
 export const useWallet = () => {
   const hasRehydratedVault = useRecoilValue(hasRehydratedVaultStore);
@@ -46,7 +46,7 @@ export const useWallet = () => {
   const hasSetPassword = useRecoilValue(hasSetPasswordState);
   const currentAccount = useRecoilValue(currentAccountState);
   const currentAccountStxAddress = useRecoilValue(currentAccountStxAddressState);
-  const transactionVersion = useRecoilValue(networkTransactionVersionState);
+  const transactionVersion = useRecoilValue(transactionNetworkVersionState);
   const networks = useRecoilValue(networksState);
   const currentNetwork = useRecoilValue(currentNetworkState);
   const currentNetworkKey = useRecoilValue(currentNetworkKeyState);

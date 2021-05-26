@@ -9,9 +9,10 @@ import { apiRevalidation, intervalStore } from '@store/common/api-helpers';
 import { fetcher } from '@common/api/wrapped-fetch';
 
 import { transactionRequestStxAddressState } from '@store/transactions/requests';
-import { currentNetworkState, networkTransactionVersionState } from '@store/networks';
+import { currentNetworkState } from '@store/networks';
 import { DEFAULT_POLLING_INTERVAL } from '@store/common/constants';
 import { walletState } from '@store/wallet';
+import { transactionNetworkVersionState } from '@store/transactions';
 
 /**
  * --------------------------------------
@@ -48,7 +49,7 @@ export const accountsWithAddressState = selector<AccountWithAddress[] | undefine
   key: 'accounts.with-address',
   get: ({ get }) => {
     const accounts = get(accountsState);
-    const transactionVersion = get(networkTransactionVersionState);
+    const transactionVersion = get(transactionNetworkVersionState);
     if (!accounts) return undefined;
     return accounts.map(account => {
       const address = getStxAddress({ account, transactionVersion });
@@ -155,7 +156,7 @@ export const accountBalancesState = selector<AllAccountData['balances'] | undefi
 });
 
 // the raw account info from the `v2/accounts` endpoint, should be most up-to-date info (compared to the extended API)
-export const accountInfoStore = selector<undefined | { balance: BN; nonce: number }>({
+export const accountInfoState = selector<undefined | { balance: BN; nonce: number }>({
   key: 'account.info',
   get: async ({ get }) => {
     const { address, network } = get(

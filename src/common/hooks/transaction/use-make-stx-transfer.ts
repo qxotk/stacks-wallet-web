@@ -1,5 +1,5 @@
-import { useRecoilCallback } from 'recoil';
-import { stacksNetworkStore } from '@store/networks';
+import { useRecoilCallback, waitForAll } from 'recoil';
+import { currentStacksNetworkState } from '@store/networks';
 import { currentAccountState } from '@store/accounts';
 import { correctNonceState } from '@store/accounts/nonce';
 import { makeSTXTokenTransfer, StacksTransaction } from '@stacks/transactions';
@@ -7,7 +7,7 @@ import BN from 'bn.js';
 import { stxToMicroStx } from '@stacks/ui-utils';
 import { useLoading } from '@common/hooks/use-loading';
 import { useEffect } from 'react';
-import { useMakeAssetTransfer } from '@common/hooks/use-asset-transfer';
+import { useMakeAssetTransfer } from '@common/hooks/transaction/use-asset-transfer';
 import { useSelectedAsset } from '@common/hooks/use-selected-asset';
 
 interface TokenTransferParams {
@@ -18,9 +18,13 @@ interface TokenTransferParams {
 export function useMakeStxTransfer() {
   return useRecoilCallback(({ snapshot }) => async (params: TokenTransferParams) => {
     const { amount, recipient } = params;
-    const stacksNetwork = await snapshot.getPromise(stacksNetworkStore);
-    const account = await snapshot.getPromise(currentAccountState);
-    const nonce = await snapshot.getPromise(correctNonceState);
+    const { network, account, nonce } = await snapshot.getPromise(
+      waitForAll({
+        network: currentStacksNetworkState,
+        account: currentAccountState,
+        nonce: correctNonceState,
+      })
+    );
 
     if (!account) return;
 
@@ -28,7 +32,7 @@ export function useMakeStxTransfer() {
       recipient,
       amount: new BN(stxToMicroStx(amount).toString(), 10),
       senderKey: account.stxPrivateKey,
-      network: stacksNetwork,
+      network,
       nonce: new BN(nonce.toString(), 10),
     });
   });
