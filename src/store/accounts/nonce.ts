@@ -1,20 +1,56 @@
-import { selector, waitForAll } from 'recoil';
+import { atomFamily, selector, waitForAll } from 'recoil';
 
 import { accountDataState, currentAccountStxAddressState, accountInfoState } from '@store/accounts';
+import { currentNetworkState } from '@store/networks';
 import { apiRevalidation } from '@store/common/api-helpers';
+import { localStorageEffect } from '@store/common/utils';
+
+enum KEYS {
+  LOCAL_NONCES = 'account/LOCAL_NONCES',
+  LATEST_LOCAL_NONCE = 'account/LATEST_LOCAL_NONCE',
+  CORRECT_NONCE = 'account/CORRECT_NONCE',
+}
+
+export const localNoncesState = atomFamily<
+  { nonce: number; blockHeight: number },
+  [string, string]
+>({
+  key: KEYS.LOCAL_NONCES,
+  default: () => ({
+    nonce: 0,
+    blockHeight: 0,
+  }),
+  effects_UNSTABLE: [localStorageEffect()],
+});
+
+export const latestNonceState = selector({
+  key: KEYS.LATEST_LOCAL_NONCE,
+  get: ({ get }) => {
+    const { network, address } = get(
+      waitForAll({
+        network: currentNetworkState,
+        address: currentAccountStxAddressState,
+      })
+    );
+    return get(localNoncesState([network.url, address || '']));
+  },
+});
 
 export const correctNonceState = selector({
-  key: 'api.correct-nonce',
+  key: KEYS.CORRECT_NONCE,
   get: ({ get }) => {
     get(apiRevalidation);
 
-    const { account, accountData, address } = get(
+    const { account, accountData, address, latestLocalNonce } = get(
       waitForAll({
         account: accountInfoState,
         accountData: accountDataState,
         address: currentAccountStxAddressState,
+        latestLocalNonce: latestNonceState,
       })
     );
+
+    const lastLocalNonce = latestLocalNonce.nonce;
 
     // most recent confirmed transactions sent by current address
     const lastConfirmedTx = accountData?.transactions.results?.filter(
@@ -51,9 +87,17 @@ export const correctNonceState = selector({
 
     // otherwise, without micro-blocks, the account nonce will likely be out of date compared
     // and not be incremented based on pending transactions
-    const pendingNonce = (latestPendingTx && latestPendingTx.nonce) || 0;
+    const pendingNonce = latestPendingTx?.nonce || 0;
+    const lastConfirmedTxNonce = lastConfirmedTx?.nonce || 0;
+
+    // lastLocalNonce can be set when the user sends transactions
+    // and can often be faster that waiting for a new response from the API
+    const useLocalNonce = lastLocalNonce > pendingNonce && lastLocalNonce > lastConfirmedTxNonce;
+
     const usePendingNonce =
-      (lastConfirmedTx && pendingNonce > lastConfirmedTx.nonce) || pendingNonce + 1 > account.nonce;
+      !useLocalNonce &&
+      ((lastConfirmedTx && pendingNonce > lastConfirmedTx.nonce) ||
+        pendingNonce + 1 > account.nonce);
 
     // if they have a last confirmed transaction (but no pending)
     // and it's greater than account nonce, we should use that one
@@ -63,7 +107,9 @@ export const correctNonceState = selector({
     const lastConfirmedNonce =
       useLastTxNonce && lastConfirmedTx ? lastConfirmedTx.nonce + 1 : account.nonce;
 
-    return usePendingNonce
+    return useLocalNonce
+      ? lastLocalNonce
+      : usePendingNonce
       ? // if pending nonce is greater, use that
         pendingNonce + 1
       : // else we use the last confirmed nonce

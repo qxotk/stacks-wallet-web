@@ -33,7 +33,7 @@ import {
   currentAccountState,
   currentAccountStxAddressState,
 } from '@store/accounts';
-import { latestNoncesState } from '@store/accounts/nonce';
+import { localNoncesState } from '@store/accounts/nonce';
 import { bytesToText } from '@store/common/utils';
 import { transactionNetworkVersionState } from '@store/transactions';
 
@@ -70,7 +70,7 @@ export const useWallet = () => {
           const blockHeight = await snapshot.getPromise(latestBlockHeightState);
           const network = await snapshot.getPromise(currentNetworkState);
           const address = await snapshot.getPromise(currentAccountStxAddressState);
-          set(latestNoncesState([network.url, address || '']), () => ({
+          set(localNoncesState([network.url, address || '']), () => ({
             blockHeight,
             nonce: newNonce,
           }));

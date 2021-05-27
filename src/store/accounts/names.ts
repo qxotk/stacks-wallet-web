@@ -32,8 +32,12 @@ type AccountNameState = AccountName[] | null;
 
 const STALE_TIME = 30 * 60 * 1000; // 30 min
 
+enum KEYS {
+  NAMES = 'account/NAMES',
+}
+
 export const accountNameState = selector<AccountNameState>({
-  key: 'names',
+  key: KEYS.NAMES,
   get: async ({ get }) => {
     const accounts = get(accountsState);
     const network = get(currentNetworkState);
