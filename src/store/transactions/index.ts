@@ -1,8 +1,7 @@
 import { atom, selector, waitForAll } from 'recoil';
 import { ChainID, TransactionVersion } from '@stacks/transactions';
-import { StacksMainnet, StacksTestnet } from '@stacks/network';
 
-import { currentNetworkState } from '@store/networks';
+import { currentNetworkState, currentStacksNetworkState } from '@store/networks';
 import { correctNonceState } from '@store/accounts/nonce';
 import { currentAccountState, currentAccountStxAddressState } from '@store/accounts';
 import { requestTokenPayloadState } from '@store/transactions/requests';
@@ -45,16 +44,13 @@ export const postConditionsState = selector({
 export const pendingTransactionState = selector({
   key: KEYS.PENDING_TRANSACTION,
   get: ({ get }) => {
-    const { payload, postConditions, _network } = get(
+    const { payload, postConditions, network } = get(
       waitForAll({
         payload: requestTokenPayloadState,
         postConditions: postConditionsState,
-        _network: currentNetworkState,
+        network: currentStacksNetworkState,
       })
     );
-    const network =
-      _network.chainId === ChainID.Mainnet ? new StacksMainnet() : new StacksTestnet();
-    network.coreApiUrl = _network.url;
     if (!payload) return;
     return { ...payload, postConditions, network };
   },
