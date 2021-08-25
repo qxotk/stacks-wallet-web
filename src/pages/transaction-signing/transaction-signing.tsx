@@ -13,11 +13,12 @@ import { Stack } from '@stacks/ui';
 import { useUpdateAtom } from 'jotai/utils';
 import { transactionBroadcastErrorState } from '@store/transactions';
 import { PostConditionModeWarning } from '@pages/transaction-signing/components/post-condition-mode-warning';
+import { useNextTxNonce } from '@common/hooks/account/use-next-tx-nonce';
 
 export const TransactionPage = memo(() => {
+  useNextTxNonce();
   const transactionRequest = useTransactionRequest();
   const setBroadcastError = useUpdateAtom(transactionBroadcastErrorState);
-  if (!transactionRequest) return null;
 
   useEffect(() => {
     return () => {
@@ -25,6 +26,7 @@ export const TransactionPage = memo(() => {
     };
   }, [setBroadcastError]);
 
+  if (!transactionRequest) return null;
   return (
     <PopupContainer header={<PopupHeader />}>
       <Stack spacing="loose">
