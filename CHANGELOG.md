@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.16.1
+
+### Patch Changes
+
+- [#1669](https://github.com/blockstack/stacks-wallet-web/pull/1669) [`fa4b49721`](https://github.com/blockstack/stacks-wallet-web/commit/fa4b49721782eb61fd74c93d9bcce1364a311d15) Thanks [@fbwoolf](https://github.com/fbwoolf)! - This relocates the 'Learn more' text link in the advanced settings drawer.
+
 ## 2.16.0
 
 ### Minor Changes
